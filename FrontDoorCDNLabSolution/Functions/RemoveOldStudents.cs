@@ -21,11 +21,11 @@ namespace Functions
         {
             log.LogInformation($"Checking for Old or Deleted Students: {DateTime.Now}");
 
-            var credentials = SdkContext.AzureCredentialsFactory.FromServicePrincipal("f9bd8bde-a803-4028-a95e-63d990f73d77", "2483704f-a9f8-45cb-a04d-4f7401819a6f", "72f988bf-86f1-41af-91ab-2d7cd011db47", AzureEnvironment.AzureGlobalCloud);
-                var azure = Azure.Configure()
-                              .WithLogLevel(HttpLoggingDelegatingHandler.Level.Basic)
-                              .Authenticate(credentials)
-                              .WithDefaultSubscription();
+            var credentials = SdkContext.AzureCredentialsFactory.FromMSI(new MSILoginInformation(MSIResourceType.AppService), AzureEnvironment.AzureGlobalCloud);
+            var azure = Azure.Configure()
+                            .WithLogLevel(HttpLoggingDelegatingHandler.Level.Basic)
+                            .Authenticate(credentials)
+                            .WithDefaultSubscription();
 
             var zone = await azure.DnsZones.GetByResourceGroupAsync("rg-contosomasks", "contosomasks.com");
 
